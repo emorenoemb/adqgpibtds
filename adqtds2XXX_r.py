@@ -1,15 +1,5 @@
 #!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import ROOT
-
-
-# In[2]:
-
-
 import pyvisa
 from struct import unpack
 import numpy as np
@@ -18,34 +8,18 @@ import matplotlib.pyplot as plt
 import time
 import os
 from IPython.display import display, clear_output
-
-
-# In[3]:
-
-
 os.chdir('/Users/emoreno/workpython/jupyter/cosmic')
+#comunicación con el osciloscopio
 rm = pyvisa.ResourceManager()
 rm.list_resources()
 rm.list_resources()[0]
 scope = rm.open_resource(rm.list_resources()[0]);
-
-
-# In[4]:
-
-
+#parametros de adquisicion del osciloscopio
 scope.write('DATA:SOU CH1;:DATA:WIDTH 1;:DATA:ENC RPB;:DATA:START 1;:DATA:STOP 500;:ACQ:STOPA SEQ');
-
-
-# In[5]:
-
-
+#Declaracion de los objetos de root
 nt = ROOT.TNtuple("ntuple","data","amplitud:min:charge")
 c = ROOT.TCanvas("myCanvasName","The Canvas Title",800,600)
-
-
-# In[ ]:
-
-
+#ciclo de adquisicion
 fig,ax = plt.subplots(1,1)
 ax = fig.add_subplot(111)
 fopen=open("patron.txt","a")
@@ -78,17 +52,6 @@ for i in range(ndatos):
             #fig.canvas.draw()
     scope.write("ACQ:STATE ON")
 fopen.close()
-
-
-# In[ ]:
-
-
+#uso de la herramientas de root
 nt.Draw("charge>>hq")
 c.Draw("charge")
-
-
-# In[ ]:
-
-
-get_ipython().run_cell_magic(u'cpp', u'', u'hq->Fit("gaus", "S");\nmyCanvasName->Draw();')
-
